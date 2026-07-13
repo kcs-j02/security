@@ -1,0 +1,303 @@
+\documentclass[a4paper,11pt,lualatex,ja=standard]{bxjsarticle}
+
+% 数式
+\usepackage{amsmath,amsfonts}
+\usepackage{bm}
+
+% 画像
+\usepackage{graphicx}
+
+% URL
+\usepackage{hyperref}
+
+% コード表示
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single
+}
+
+% ===== cover command =====
+\newcommand{\cover}[3]{
+  \thispagestyle{empty}
+  \vspace*{4cm}
+  \begin{center}
+    {\LARGE #1}\\[2cm]
+    {\Large #2}\\[3cm]
+    {\large 氏名：#3}\\[1cm]
+  \end{center}
+  \newpage
+}
+% =========================
+
+\begin{document}
+
+% ===== cover =====
+\cover{security}{1. IT基礎}{小林智輝}
+% =================
+
+\section{目的}
+
+本課題の目的は、ネットワークおよびOSの基礎を身につけることである。
+具体的には、Linux環境の構築、Linuxコマンドの操作、通信プロトコルの理解、
+Wiresharkによる通信パケットの取得、Pythonによる通信ログの集計を行う。
+
+\section{具体的に行うこと}
+
+本課題で具体的に行う内容は以下の通りである。
+
+\begin{enumerate}
+  \item Linuxを仮想環境に構築する。
+  \item Linuxコマンド（ls, grep, find, chmodなど）を習得する。
+  \item DNS・HTTP・HTTPS・TCP/IPの通信の流れを学ぶ。
+  \item WiresharkでWebアクセス時の通信をキャプチャして解析する。
+  \item Pythonで通信ログ集計ツールを作成する。
+\end{enumerate}
+
+\newpage
+
+\section{Linuxを仮想環境に構築する}
+
+VirtualBoxを用いてPC上に仮想マシンを作成し、その仮想マシンにUbuntuをインストールした。
+これにより、Windows上でLinuxを安全に操作できる環境を構築した。
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./../security_photo/step01.png}
+  \caption{VirtualBoxによる仮想マシンの作成}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./../security_photo/step01-1.png}
+  \caption{Ubuntuのインストール設定}
+\end{figure}
+
+\newpage
+
+\section{Linuxコマンドの習得}
+
+Linuxでは、マウス操作だけでなく、ターミナル上でコマンドを入力することで、
+ファイル操作、検索、権限変更などを行うことができる。
+本課題では、ChatGPTに作成してもらった例題を実際に解くことで、
+基本的なLinuxコマンドの使い方を学習した。
+
+\subsection{例題1：作業用フォルダを作る}
+
+\subsubsection*{問題}
+
+\texttt{security} というフォルダを作成し、その中に移動しなさい。
+
+\begin{lstlisting}
+mkdir security
+cd security
+pwd
+\end{lstlisting}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./../security_photo/step01-2.png}
+  \caption{作業用フォルダの作成}
+\end{figure}
+
+\subsection{例題2：ファイルを作成して確認する}
+
+\subsubsection*{問題}
+
+\texttt{sample.txt} という空ファイルを作成し、存在するか確認しなさい。
+
+\begin{lstlisting}
+touch sample.txt
+ls
+ls -l
+\end{lstlisting}
+
+\texttt{ls} はファイルやディレクトリの一覧を表示するコマンドである。
+また、\texttt{ls -l} を用いることで、ファイルの権限やサイズなどの詳細情報を確認できる。
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./../security_photo/step01-4.png}
+  \caption{sample.txtの作成と確認}
+\end{figure}
+
+\subsection{例題3：文字を書き込んで検索する}
+
+\subsubsection*{問題}
+
+\texttt{sample.txt} に以下の文字を書き込み、その後 \texttt{error} という文字を検索しなさい。
+
+\begin{lstlisting}
+apple
+banana
+error
+orange
+\end{lstlisting}
+
+実行したコマンドは以下の通りである。
+
+\begin{lstlisting}
+echo "apple" > sample.txt
+echo "banana" >> sample.txt
+echo "error" >> sample.txt
+echo "orange" >> sample.txt
+grep "error" sample.txt
+\end{lstlisting}
+
+\texttt{echo} は文字列を出力するコマンドである。
+\texttt{>} はファイルへ上書きし、\texttt{>>} はファイルへ追記する。
+また、\texttt{grep} はファイル内から指定した文字列を検索するコマンドである。
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./../security_photo/step01-5.png}
+  \caption{grepによる文字列検索}
+\end{figure}
+
+\subsection{例題4：ファイルを探す}
+
+\subsubsection*{問題}
+
+現在のフォルダ以下から \texttt{sample.txt} を探しなさい。
+
+\begin{lstlisting}
+find . -name "sample.txt"
+\end{lstlisting}
+
+\texttt{find} は、指定した条件に一致するファイルやディレクトリを検索するコマンドである。
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./../security_photo/step01-6.png}
+  \caption{findによるファイル検索}
+\end{figure}
+
+\subsection{例題5：実行用ファイルを作る}
+
+\subsubsection*{問題}
+
+\texttt{script.sh} というファイルを作り、実行権限を付けなさい。
+
+\begin{lstlisting}
+touch script.sh
+chmod 755 script.sh
+ls -l
+\end{lstlisting}
+
+\texttt{chmod} はファイルの権限を変更するコマンドである。
+\texttt{-rwxr-xr-x} のように表示された場合、\texttt{x} が実行権限を表している。
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./../security_photo/step01-7.png}
+  \caption{chmodによる実行権限の付与}
+\end{figure}
+
+\subsection{例題6：条件に合うファイルを探す}
+
+\subsubsection*{問題}
+
+\texttt{.txt} で終わるファイルをすべて探しなさい。
+
+\begin{lstlisting}
+find . -name "*.txt"
+\end{lstlisting}
+
+同様に、現在のディレクトリ内で \texttt{.txt} ファイルを確認するだけであれば、
+以下のコマンドでも確認できる。
+
+\begin{lstlisting}
+ls *.txt
+\end{lstlisting}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./../security_photo/step01-8.png}
+  \caption{条件に合うファイルの検索}
+\end{figure}
+
+\newpage
+
+\section{WiresharkとPythonによる通信ログの集計・分析}
+
+本課題では、Wiresharkで通信パケットを取得し、
+Pythonで通信内容を集計・分析した。
+これにより、自分のPCで発生している通信の種類や傾向を確認した。
+
+\subsection{具体的な手順}
+
+具体的に行った内容は以下の通りである。
+
+\begin{enumerate}
+  \item Wiresharkをインストールし、通信パケットを取得する環境を用意した。
+  \item ブラウザでWebサイトを開く、またはpingを実行することで通信を発生させた。
+  \item Wiresharkで取得した通信を \texttt{sample.pcapng} として保存した。
+  \item Pythonの \texttt{pyshark} を用いて \texttt{pcapng} ファイルを読み込んだ。
+  \item TCP・UDP・ICMPなどの通信プロトコルごとに件数を集計した。
+  \item 集計結果を表示し、通信傾向を確認した。
+\end{enumerate}
+
+\subsection{実際に用いたPythonコード}
+
+実際に用いたコードを以下に示す。
+
+\begin{lstlisting}[language=Python]
+import pyshark
+from collections import Counter
+
+file_name = "sample.pcapng"
+counts = Counter()
+total = 0
+
+capture = pyshark.FileCapture(file_name, keep_packets=False)
+
+for packet in capture:
+    total += 1
+
+    layers = [layer.layer_name.upper() for layer in packet.layers]
+
+    if "TCP" in layers:
+        counts["TCP"] += 1
+    elif "UDP" in layers:
+        counts["UDP"] += 1
+    elif "ICMP" in layers or "ICMPV6" in layers:
+        counts["ICMP"] += 1
+    else:
+        counts["OTHER"] += 1
+
+capture.close()
+
+print("total packets:", total)
+
+for protocol, count in counts.items():
+    rate = count / total * 100 if total > 0 else 0
+    print(f"{protocol}: {count} packets ({rate:.1f}%)")
+\end{lstlisting}
+
+このプログラムでは、Wiresharkで保存した \texttt{sample.pcapng} を読み込み、
+各パケットに含まれるレイヤ情報を確認している。
+その中に \texttt{TCP}、\texttt{UDP}、\texttt{ICMP} が含まれているかを判定し、
+それぞれの出現回数を集計した。
+
+\subsection{実行結果}
+
+Pythonプログラムを実行した結果、通信プロトコルごとの件数を確認できた。
+これにより、取得した通信の中でTCP、UDP、ICMPのどの通信が多いかを把握できた。
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{./../security_photo/step01-9.png}
+  \caption{Pythonによる通信ログ集計結果}
+\end{figure}
+
+\section{まとめ}
+
+本課題では、VirtualBoxを用いてLinux環境を構築し、
+Linuxの基本的なコマンド操作を学習した。
+また、Wiresharkで取得した通信パケットをPythonで読み込み、
+TCP、UDP、ICMPなどの通信プロトコルごとに集計した。
+
+これにより、OSの基本操作だけでなく、ネットワーク通信の取得・解析・集計までの一連の流れを理解できた。
+
+\end{document}
